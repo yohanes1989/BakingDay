@@ -42,7 +42,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.recipeStepDetailWrapper, recipeStepDetailFragment)
+                .replace(R.id.recipeStepDetailWrapper, recipeStepDetailFragment)
                 .commit();
 
         getSupportActionBar().setTitle(getString(R.string.recipe_title_loading));
