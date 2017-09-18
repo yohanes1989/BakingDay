@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">BakingDay</string>
+    <string name="app_namespace">id.co.webpresso.yohanes.bakingday</string>
+
+    <string name="recipe_card_view_button">Bake This</string>
+    <string name="recipe_title_loading">Loading Recipe</string>
+
+    <string name="recipe_ingredients_section_title">Ingredients</string>
+    <string name="recipe_steps_section_title">Steps</string>
+
+    <string name="recipe_step_title">Step %1$d: %2$s</string>
+    <string name="recipe_step_next">Next</string>
+    <string name="recipe_step_prev">Previous</string>
+
+    <string name="recipe_ingredients_appwidget_empty">Fetching ingredients...</string>
+    <string name="recipe_ingredients_appwidget_configuration_recipe_label">Select Recipe</string>
+    <string name="recipe_ingredients_appwidget_configuration_add_widget">Add widget</string>
+
+    <plurals name="serving_size">
+        <item quantity="zero">%s Serving</item>
+        <item quantity="one">%s Serving</item>
+        <item quantity="other">%s Servings</item>
+    </plurals>
+
+    <plurals name="steps">
+        <item quantity="zero">%s Step</item>
+        <item quantity="one">%s Step</item>
+        <item quantity="other">%s Steps</item>
+    </plurals>
+</resources>

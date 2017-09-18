@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/normal_spacing">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/normal_spacing"
+        android:text="@string/recipe_ingredients_appwidget_configuration_recipe_label" />
+
+    <Spinner
+        android:id="@+id/recipeIngredientAppWidgetConfigurationRecipeSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/normal_spacing" />
+
+    <Button
+        android:id="@+id/recipeIngredientAppWidgetConfigurationAddButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/normal_spacing"
+        android:text="@string/recipe_ingredients_appwidget_configuration_add_widget" />
+
+</LinearLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/recipeImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/recipe_card_image_height"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            app:srcCompat="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/recipeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_spacing"
+            app:layout_constraintHorizontal_weight="0.7"
+            app:layout_constraintLeft_toLeftOf="@+id/recipeImage"
+            app:layout_constraintTop_toBottomOf="@+id/recipeImage"
+            style="@style/RecipeTitle"
+            tools:text="Recipe" />
+
+        <TextView
+            android:id="@+id/recipeServings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_spacing"
+            app:layout_constraintHorizontal_weight="0.3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeImage"
+            style="@style/RecipeSubtitle"
+            tools:text="5 Servings" />
+
+        <TextView
+            android:id="@+id/recipeViewText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/normal_spacing"
+            android:text="@string/recipe_card_view_button"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeName" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
