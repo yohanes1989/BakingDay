@@ -45,7 +45,7 @@ public class RecipeDetailActivity
 
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.recipeDetailWrapper, recipeDetailFragment)
+                    .replace(R.id.recipeDetailWrapper, recipeDetailFragment)
                     .commit();
 
             if (twoPanes) {
