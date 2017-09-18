@@ -124,8 +124,18 @@ public class RecipeStepDetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
 
         releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     /**
