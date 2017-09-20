@@ -3,6 +3,7 @@ package id.co.webpresso.yohanes.bakingday.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -55,7 +56,7 @@ public class RecipeDetailActivity
                     recipeStepNumber = 1;
                 }
 
-                loadRecipeStepFragment(recipeStepNumber);
+                loadRecipeStepFragment(recipeStepNumber, savedInstanceState);
             }
         }
 
@@ -68,12 +69,22 @@ public class RecipeDetailActivity
         recipeStepNumber = sortNumber;
 
         if (twoPanes) {
-            loadRecipeStepFragment(sortNumber);
+            loadRecipeStepFragment(sortNumber, null);
         } else {
             Intent stepDetailIntent = new Intent(this, RecipeStepDetailActivity.class);
             stepDetailIntent.setData(recipeUri);
             stepDetailIntent.putExtra(RecipeStepDetailActivity.BUNDLE_RECIPE_STEP_NUMBER, sortNumber);
             startActivity(stepDetailIntent);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (twoPanes) {
+            outState.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
+            getSupportFragmentManager().putFragment(outState, RecipeStepDetailFragment.RECIPE_STEP_DETAIL_FRAGMENT, recipeStepDetailFragment);
         }
     }
 
@@ -106,20 +117,24 @@ public class RecipeDetailActivity
     public void onRecipeStepNavClick(int step) {
         recipeStepNumber += step;
 
-        loadRecipeStepFragment(recipeStepNumber);
+        loadRecipeStepFragment(recipeStepNumber, null);
     }
 
-    protected void loadRecipeStepFragment(int recipeStepNumber) {
-        RecipeStepDetailFragment newRecipeStepDetailFragment = new RecipeStepDetailFragment();
-        Bundle recipeDetailBundle = new Bundle();
+    protected void loadRecipeStepFragment(int recipeStepNumber, Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            recipeStepDetailFragment = (RecipeStepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, RecipeStepDetailFragment.RECIPE_STEP_DETAIL_FRAGMENT);
+        } else {
+            recipeStepDetailFragment = new RecipeStepDetailFragment();
+            Bundle recipeDetailBundle = new Bundle();
 
-        recipeDetailBundle.putString(RecipeStepDetailFragment.ARG_RECIPE_CONTENT_PATH, recipeUri.toString());
-        recipeDetailBundle.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
-        newRecipeStepDetailFragment.setArguments(recipeDetailBundle);
+            recipeDetailBundle.putString(RecipeStepDetailFragment.ARG_RECIPE_CONTENT_PATH, recipeUri.toString());
+            recipeDetailBundle.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
+            recipeStepDetailFragment.setArguments(recipeDetailBundle);
+        }
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.recipeStepDetailWrapper, newRecipeStepDetailFragment);
+                .replace(R.id.recipeStepDetailWrapper, recipeStepDetailFragment);
 
         fragmentTransaction.commit();
 

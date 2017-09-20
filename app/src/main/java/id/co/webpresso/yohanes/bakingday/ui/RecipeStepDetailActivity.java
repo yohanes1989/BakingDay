@@ -30,15 +30,17 @@ public class RecipeStepDetailActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             recipeStepNumber = savedInstanceState.getInt(BUNDLE_RECIPE_STEP_NUMBER);
+
+            recipeStepDetailFragment = (RecipeStepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, RecipeStepDetailFragment.RECIPE_STEP_DETAIL_FRAGMENT);
         } else {
             recipeStepNumber = getIntent().getIntExtra(BUNDLE_RECIPE_STEP_NUMBER, 1);
-        }
 
-        recipeStepDetailFragment = new RecipeStepDetailFragment();
-        Bundle recipeStepDetailBundle = new Bundle();
-        recipeStepDetailBundle.putString(RecipeStepDetailFragment.ARG_RECIPE_CONTENT_PATH, recipeUri.toString());
-        recipeStepDetailBundle.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
-        recipeStepDetailFragment.setArguments(recipeStepDetailBundle);
+            recipeStepDetailFragment = new RecipeStepDetailFragment();
+            Bundle recipeStepDetailBundle = new Bundle();
+            recipeStepDetailBundle.putString(RecipeStepDetailFragment.ARG_RECIPE_CONTENT_PATH, recipeUri.toString());
+            recipeStepDetailBundle.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
+            recipeStepDetailFragment.setArguments(recipeStepDetailBundle);
+        }
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -54,6 +56,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
 
         outState.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
+        getSupportFragmentManager().putFragment(outState, RecipeStepDetailFragment.RECIPE_STEP_DETAIL_FRAGMENT, recipeStepDetailFragment);
     }
 
     @Override
@@ -77,6 +80,8 @@ public class RecipeStepDetailActivity extends AppCompatActivity
         }
 
         fragmentTransaction.commit();
+
+        recipeStepDetailFragment = newRecipeStepDetailFragment;
     }
 
     @Override

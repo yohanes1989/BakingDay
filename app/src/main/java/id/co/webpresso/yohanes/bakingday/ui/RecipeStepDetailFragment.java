@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -50,12 +52,15 @@ public class RecipeStepDetailFragment extends Fragment {
     public static final int LOADER_RECIPE_STEPS = 6;
     public static final String ARG_RECIPE_CONTENT_PATH = "recipe_path";
     public static final String ARG_RECIPE_STEP_NUMBER = "recipe_step_number";
+    public static final String BUNDLE_VIDEO_POSITION = "video_position";
     public static final String TAG = RecipeStepDetailFragment.class.getSimpleName();
+    public static final String RECIPE_STEP_DETAIL_FRAGMENT = "recipe_step_detail_fragment";
 
     public Recipe recipe;
     public Uri recipeUri;
     public Recipe.Step recipeStep;
     public int recipeStepNumber;
+    public long videoPosition = C.POSITION_UNSET;
 
     public ImageView stepThumbnail;
     public TextView stepTitleText;
@@ -100,6 +105,10 @@ public class RecipeStepDetailFragment extends Fragment {
             throw new IllegalArgumentException("Argument ARG_RECIPE_CONTENT_PATH is required.");
         }
 
+        if (savedInstanceState != null) {
+            videoPosition = savedInstanceState.getLong(BUNDLE_VIDEO_POSITION);
+        }
+
         setRecipeUri(Uri.parse(arguments.getString(ARG_RECIPE_CONTENT_PATH)));
         recipeStepNumber = arguments.containsKey(ARG_RECIPE_STEP_NUMBER) ? arguments.getInt(ARG_RECIPE_STEP_NUMBER) : 1;
 
@@ -122,20 +131,19 @@ public class RecipeStepDetailFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        releasePlayer();
+        if (videoPlayer != null) {
+            outState.putLong(BUNDLE_VIDEO_POSITION, videoPlayer.getCurrentPosition());
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
+        releasePlayer();
     }
 
     /**
@@ -171,6 +179,8 @@ public class RecipeStepDetailFragment extends Fragment {
             videoPlayerView.setPlayer(videoPlayer);
 
             videoPlayer.addListener(new VideoPlayerListener());
+
+            if (videoPosition != C.POSITION_UNSET) videoPlayer.seekTo(videoPosition);
 
             String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
             MediaSource mediaSource = new ExtractorMediaSource(
