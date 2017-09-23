@@ -13,6 +13,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 
+import static org.hamcrest.Matchers.is;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,21 +60,18 @@ public class RecipeDetailActivityTest {
      */
     @Test
     public void rendersCorrectIngredientsCount() {
-        onView(withId(R.id.recipeDetailIngredientList)).check(matches(hasChildCount(11)));
+        onView(withId(R.id.recipeDetailIngredientListWrapper)).check(matches(hasChildCount(11)));
     }
 
     @Test
     public void rendersCorrectIngredients() {
-        onView(withId(R.id.recipeDetailIngredientList)).check(matches(hasDescendant(withText("Bittersweet chocolate (60-70% cacao)"))));
-        onView(withId(R.id.recipeDetailIngredientList)).check(matches(hasDescendant(withText("semisweet chocolate chips"))));
+        onView(withId(R.id.recipeDetailIngredientListWrapper)).check(matches(hasDescendant(withText("Bittersweet chocolate (60-70% cacao)"))));
+        onView(withId(R.id.recipeDetailIngredientListWrapper)).check(matches(hasDescendant(withText("semisweet chocolate chips"))));
     }
 
-    /**
-     * It should have 10 steps, but because there is section title, we should add 1 child count
-     */
     @Test
     public void rendersCorrectStepsCount() {
-        onView(withId(R.id.recipeDetailStepList)).check(matches(hasChildCount(11)));
+        onView(withId(R.id.recipeDetailStepList)).check(matches(RecipeTestHelper.recylerViewAdapterCount(is(10))));
     }
 
     @Test

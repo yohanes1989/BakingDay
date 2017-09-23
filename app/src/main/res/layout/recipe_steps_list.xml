@@ -13,4 +13,12 @@
         android:text="@string/recipe_steps_section_title"
         style="@style/RecipeSubtitle"
         android:layout_marginBottom="@dimen/normal_spacing" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recipeDetailStepList"
+        android:overScrollMode="always"
+        android:scrollbars="none"
+        android:isScrollContainer="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

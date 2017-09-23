@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -42,7 +42,7 @@
 
             <include
                 layout="@layout/recipe_ingredients_list"
-                android:id="@+id/recipeDetailIngredientList"
+                android:id="@+id/recipeDetailIngredientListWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </android.support.v7.widget.CardView>
@@ -54,9 +54,9 @@
 
             <include
                 layout="@layout/recipe_steps_list"
-                android:id="@+id/recipeDetailStepList"
+                android:id="@+id/recipeDetailStepListWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </android.support.v7.widget.CardView>
     </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

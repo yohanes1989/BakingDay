@@ -39,10 +39,14 @@ public class RecipeDetailActivity
         if (getIntent() != null) {
             recipeUri = getIntent().getData();
 
-            recipeDetailFragment = new RecipeDetailFragment();
-            Bundle recipeDetailBundle = new Bundle();
-            recipeDetailBundle.putString(RecipeDetailFragment.ARG_RECIPE_CONTENT_PATH, recipeUri.toString());
-            recipeDetailFragment.setArguments(recipeDetailBundle);
+            if (savedInstanceState != null) {
+                recipeDetailFragment = (RecipeDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, RecipeDetailFragment.RECIPE_DETAIL_FRAGMENT);
+            } else {
+                recipeDetailFragment = new RecipeDetailFragment();
+                Bundle recipeDetailBundle = new Bundle();
+                recipeDetailBundle.putString(RecipeDetailFragment.ARG_RECIPE_CONTENT_PATH, recipeUri.toString());
+                recipeDetailFragment.setArguments(recipeDetailBundle);
+            }
 
             getSupportFragmentManager()
                     .beginTransaction()
@@ -86,6 +90,8 @@ public class RecipeDetailActivity
             outState.putInt(BUNDLE_RECIPE_STEP_NUMBER, recipeStepNumber);
             getSupportFragmentManager().putFragment(outState, RecipeStepDetailFragment.RECIPE_STEP_DETAIL_FRAGMENT, recipeStepDetailFragment);
         }
+
+        getSupportFragmentManager().putFragment(outState, RecipeDetailFragment.RECIPE_DETAIL_FRAGMENT, recipeDetailFragment);
     }
 
     @Override
@@ -142,11 +148,11 @@ public class RecipeDetailActivity
     }
 
     protected void setCurrentStepSelected() {
-        if (recipeDetailFragment.recipeStepList != null) {
+        if (recipeDetailFragment.recipeStepList != null && twoPanes) {
             // Set other steps inactive and set current Step as active.
             // We increment child position because it contains "Steps" section title
-            for (int i = 1; i <= recipeDetailFragment.recipeStepList.getChildCount() - 1; i += 1) {
-                recipeDetailFragment.recipeStepList.getChildAt(i).setSelected(i == recipeStepNumber);
+            for (int i = 1; i <= recipeDetailFragment.recipeStepList.getAdapter().getItemCount() - 1; i += 1) {
+                 recipeDetailFragment.recipeStepList.getChildAt(i - 1).setSelected(i == recipeStepNumber);
             }
         }
     }

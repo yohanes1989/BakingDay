@@ -21,6 +21,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -64,7 +65,7 @@ public class RecipeStepDetailTest {
 
     @Test
     public void onStepClick_ShowCorrectStep() {
-        onView(allOf(withText("Recipe Introduction"), withId(R.id.recipeDetailStepShortDescription))).perform(scrollTo(), click());
+        onView(withId(R.id.recipeDetailStepList)).perform(actionOnItemAtPosition(0, click()));
 
         // Check if video is displayed
         onView(allOf(withId(R.id.recipeStepDetailVideoPlayerView), withClassName(is(SimpleExoPlayerView.class.getName())))).check(matches(isDisplayed()));
@@ -74,7 +75,7 @@ public class RecipeStepDetailTest {
 
     @Test
     public void onNextClick_ShowNextStep() {
-        onView(allOf(withText("Recipe Introduction"), withId(R.id.recipeDetailStepShortDescription))).perform(scrollTo(), click());
+        onView(withId(R.id.recipeDetailStepList)).perform(actionOnItemAtPosition(0, click()));
 
         onView(withId(R.id.recipeStepDetailNextButton)).perform(click());
 
@@ -91,7 +92,7 @@ public class RecipeStepDetailTest {
 
     @Test
     public void onPrevClick_ShowPreviousStep() {
-        onView(allOf(withText("Recipe Introduction"), withId(R.id.recipeDetailStepShortDescription))).perform(scrollTo(), click());
+        onView(withId(R.id.recipeDetailStepList)).perform(actionOnItemAtPosition(0, click()));
 
         // Move 2 steps
         onView(withId(R.id.recipeStepDetailNextButton)).perform(click());
@@ -116,7 +117,7 @@ public class RecipeStepDetailTest {
 
     @Test
     public void onBackPressed_ShowPreviousStep() {
-        onView(allOf(withText("Recipe Introduction"), withId(R.id.recipeDetailStepShortDescription))).perform(scrollTo(), click());
+        onView(withId(R.id.recipeDetailStepList)).perform(actionOnItemAtPosition(0, click()));
 
         // Move 2 steps
         onView(withId(R.id.recipeStepDetailNextButton)).perform(click());

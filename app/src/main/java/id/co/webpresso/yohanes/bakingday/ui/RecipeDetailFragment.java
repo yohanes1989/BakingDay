@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +25,15 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 
 import id.co.webpresso.yohanes.bakingday.R;
+import id.co.webpresso.yohanes.bakingday.adapter.RecipeStepsAdapter;
 import id.co.webpresso.yohanes.bakingday.idling_resource.RecipeIdlingResource;
 import id.co.webpresso.yohanes.bakingday.model.Recipe;
 import id.co.webpresso.yohanes.bakingday.util.Util;
 
 public class RecipeDetailFragment extends Fragment {
     public static final String ARG_RECIPE_CONTENT_PATH = "recipe_path";
+    public static final String BUNDLE_SCROLL_Y = "SCROLL_Y";
+    public static final String RECIPE_DETAIL_FRAGMENT = "recipe_detail_fragment";
     public static final int LOADER_RECIPE_DETAIL = 2;
     public static final int LOADER_RECIPE_DETAIL_INGREDIENTS = 3;
     public static final int LOADER_RECIPE_DETAIL_STEPS = 4;
@@ -39,12 +45,14 @@ public class RecipeDetailFragment extends Fragment {
     public TextView recipeNameTextView;
     public TextView recipeServingsTextView;
 
-    public LinearLayout recipeIngredientList;
-    public LinearLayout recipeStepList;
+    public LinearLayout recipeIngredientListWrapper;
+    public RecyclerView recipeStepList;
+    public RecipeStepsAdapter recipeStepsAdapter;
 
     private LayoutInflater layoutInflater;
     private OnStepClickListener stepClickListener;
     private OnRecipeLoadedListener onRecipeLoadedListener;
+    private int scrollYPosition = 0;
 
     @Nullable private RecipeIdlingResource idlingResource;
 
@@ -79,6 +87,10 @@ public class RecipeDetailFragment extends Fragment {
             throw new IllegalArgumentException("Argument ARG_RECIPE_CONTENT_PATH is required.");
         }
 
+        if (savedInstanceState != null) {
+            scrollYPosition = savedInstanceState.getInt(BUNDLE_SCROLL_Y);
+        }
+
         setRecipeUri(Uri.parse(getArguments().getString(ARG_RECIPE_CONTENT_PATH)));
 
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
@@ -89,8 +101,13 @@ public class RecipeDetailFragment extends Fragment {
         recipeNameTextView = (TextView) rootView.findViewById(R.id.recipeDetailName);
         recipeServingsTextView = (TextView) rootView.findViewById(R.id.recipeDetailServings);
 
-        recipeStepList = (LinearLayout) rootView.findViewById(R.id.recipeDetailStepList);
-        recipeIngredientList = (LinearLayout) rootView.findViewById(R.id.recipeDetailIngredientList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recipeStepsAdapter = new RecipeStepsAdapter(stepClickListener);
+        recipeStepList = (RecyclerView) rootView.findViewById(R.id.recipeDetailStepList);
+        recipeStepList.setLayoutManager(layoutManager);
+        recipeStepList.setAdapter(recipeStepsAdapter);
+
+        recipeIngredientListWrapper = (LinearLayout) rootView.findViewById(R.id.recipeDetailIngredientListWrapper);
 
         idlingResource = Util.getIdlingResource();
 
@@ -99,6 +116,13 @@ public class RecipeDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(BUNDLE_SCROLL_Y, getView().getScrollY());
     }
 
     /**
@@ -111,7 +135,7 @@ public class RecipeDetailFragment extends Fragment {
     }
 
     private void renderIngredient(Recipe.Ingredient ingredient) {
-        View ingredientView = layoutInflater.inflate(R.layout.recipe_ingredient_card, recipeIngredientList, false);
+        View ingredientView = layoutInflater.inflate(R.layout.recipe_ingredient_card, recipeIngredientListWrapper, false);
 
         TextView ingredientNameTextView = (TextView) ingredientView.findViewById(R.id.recipeDetailIngredientName);
         TextView ingredientQuantityTextView = (TextView) ingredientView.findViewById(R.id.recipeDetailIngredientQuantity);
@@ -123,26 +147,7 @@ public class RecipeDetailFragment extends Fragment {
         DecimalFormat decimalFormat = new DecimalFormat("#");
         ingredientQuantityTextView.setText(decimalFormat.format(ingredient.getQuantity()));
 
-        recipeIngredientList.addView(ingredientView);
-    }
-
-    private void renderStep(Recipe.Step step, final int sortNumber) {
-        View stepView = layoutInflater.inflate(R.layout.recipe_step_card, recipeStepList, false);
-
-        TextView stepNumberTextView = (TextView) stepView.findViewById(R.id.recipeDetailStepNumber);
-        TextView stepShortDescriptionView = (TextView) stepView.findViewById(R.id.recipeDetailStepShortDescription);
-
-        stepNumberTextView.setText(String.valueOf(sortNumber));
-        stepShortDescriptionView.setText(step.getShortDescription());
-
-        stepView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stepClickListener.onStepClick(sortNumber);
-            }
-        });
-
-        recipeStepList.addView(stepView);
+        recipeIngredientListWrapper.addView(ingredientView);
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> recipeDetailLoaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -207,9 +212,7 @@ public class RecipeDetailFragment extends Fragment {
                 case LOADER_RECIPE_DETAIL_STEPS:
                     recipe.setSteps(data);
 
-                    for (int i = 1; i <= recipe.getSteps().size(); i++) {
-                        renderStep(recipe.getSteps().get(i - 1), i);
-                    }
+                    recipeStepsAdapter.setSteps(recipe.getSteps());
 
                     if (idlingResource != null) {
                         idlingResource.setIdleState(true);
@@ -217,6 +220,15 @@ public class RecipeDetailFragment extends Fragment {
 
                     if (onRecipeLoadedListener != null) {
                         onRecipeLoadedListener.onRecipeLoaded(recipe);
+                    }
+
+                    if (scrollYPosition != 0) {
+                        getView().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                getView().scrollBy(0, scrollYPosition);
+                            }
+                        });
                     }
 
                     break;
