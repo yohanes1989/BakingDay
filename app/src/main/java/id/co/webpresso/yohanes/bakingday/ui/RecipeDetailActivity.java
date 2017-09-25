@@ -151,8 +151,8 @@ public class RecipeDetailActivity
         if (recipeDetailFragment.recipeStepList != null && twoPanes) {
             // Set other steps inactive and set current Step as active.
             // We increment child position because it contains "Steps" section title
-            for (int i = 1; i <= recipeDetailFragment.recipeStepList.getAdapter().getItemCount() - 1; i += 1) {
-                 recipeDetailFragment.recipeStepList.getChildAt(i - 1).setSelected(i == recipeStepNumber);
+            for (int i = 1; i <= recipeDetailFragment.recipeStepList.getAdapter().getItemCount(); i += 1) {
+                recipeDetailFragment.recipeStepList.getChildAt(i - 1).setSelected(i == recipeStepNumber);
             }
         }
     }

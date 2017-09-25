@@ -218,18 +218,18 @@ public class RecipeDetailFragment extends Fragment {
                         idlingResource.setIdleState(true);
                     }
 
-                    if (onRecipeLoadedListener != null) {
-                        onRecipeLoadedListener.onRecipeLoaded(recipe);
-                    }
+                    getView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (onRecipeLoadedListener != null) {
+                                onRecipeLoadedListener.onRecipeLoaded(recipe);
+                            }
 
-                    if (scrollYPosition != 0) {
-                        getView().post(new Runnable() {
-                            @Override
-                            public void run() {
+                            if (scrollYPosition != 0) {
                                 getView().scrollBy(0, scrollYPosition);
                             }
-                        });
-                    }
+                        }
+                    });
 
                     break;
                 default:
