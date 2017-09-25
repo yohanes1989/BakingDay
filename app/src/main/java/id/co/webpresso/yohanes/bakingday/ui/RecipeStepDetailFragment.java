@@ -99,18 +99,9 @@ public class RecipeStepDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         idlingResource = id.co.webpresso.yohanes.bakingday.util.Util.getIdlingResource();
 
-        Bundle arguments = getArguments();
-
-        if (!arguments.containsKey(ARG_RECIPE_CONTENT_PATH)) {
-            throw new IllegalArgumentException("Argument ARG_RECIPE_CONTENT_PATH is required.");
-        }
-
         if (savedInstanceState != null) {
             videoPosition = savedInstanceState.getLong(BUNDLE_VIDEO_POSITION);
         }
-
-        setRecipeUri(Uri.parse(arguments.getString(ARG_RECIPE_CONTENT_PATH)));
-        recipeStepNumber = arguments.containsKey(ARG_RECIPE_STEP_NUMBER) ? arguments.getInt(ARG_RECIPE_STEP_NUMBER) : 1;
 
         layoutInflater = inflater;
 
@@ -137,6 +128,20 @@ public class RecipeStepDetailFragment extends Fragment {
         if (videoPlayer != null) {
             outState.putLong(BUNDLE_VIDEO_POSITION, videoPlayer.getCurrentPosition());
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Bundle arguments = getArguments();
+
+        if (!arguments.containsKey(ARG_RECIPE_CONTENT_PATH)) {
+            throw new IllegalArgumentException("Argument ARG_RECIPE_CONTENT_PATH is required.");
+        }
+
+        setRecipeUri(Uri.parse(arguments.getString(ARG_RECIPE_CONTENT_PATH)));
+        recipeStepNumber = arguments.containsKey(ARG_RECIPE_STEP_NUMBER) ? arguments.getInt(ARG_RECIPE_STEP_NUMBER) : 1;
     }
 
     @Override
